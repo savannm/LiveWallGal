@@ -1,0 +1,299 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A001 /* LiveWallpaperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001 /* LiveWallpaperApp.swift */; };
+		A002 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002 /* AppDelegate.swift */; };
+		A003 /* WallpaperWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B003 /* WallpaperWindow.swift */; };
+		A004 /* WallpaperMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B004 /* WallpaperMode.swift */; };
+		A005 /* VideoWallpaperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005 /* VideoWallpaperView.swift */; };
+		A006 /* ShaderWallpaperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B006 /* ShaderWallpaperView.swift */; };
+		A007 /* HTMLWallpaperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B007 /* HTMLWallpaperView.swift */; };
+		A008 /* ParticleWallpaperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B008 /* ParticleWallpaperView.swift */; };
+		A009 /* BrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B009b /* BrowserWindow.swift */; };
+		A010 /* BrowserHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010 /* BrowserHTML.swift */; };
+		A011 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B011; };
+		A012 /* VideoScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B012; };
+		A013 /* ScannerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B013; };
+		A014 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B014; };
+		A015 /* UploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B015; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B001 /* LiveWallpaperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveWallpaperApp.swift; sourceTree = "<group>"; };
+		B002 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B003 /* WallpaperWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperWindow.swift; sourceTree = "<group>"; };
+		B004 /* WallpaperMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperMode.swift; sourceTree = "<group>"; };
+		B005 /* VideoWallpaperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoWallpaperView.swift; sourceTree = "<group>"; };
+		B006 /* ShaderWallpaperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderWallpaperView.swift; sourceTree = "<group>"; };
+		B007 /* HTMLWallpaperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLWallpaperView.swift; sourceTree = "<group>"; };
+		B008 /* ParticleWallpaperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticleWallpaperView.swift; sourceTree = "<group>"; };
+		B009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B009b /* BrowserWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserWindow.swift; sourceTree = "<group>"; };
+		B010 /* BrowserHTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserHTML.swift; sourceTree = "<group>"; };
+		B011 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		PROD /* LiveWallpaper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveWallpaper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B012 /* VideoScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoScanner.swift; sourceTree = "<group>"; };
+		B013 /* ScannerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerManager.swift; sourceTree = "<group>"; };
+		B014 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
+		B015 /* UploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		ROOT = {
+			isa = PBXGroup;
+			children = (
+				SRCGRP /* LiveWallpaper */,
+				PRODGRP /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		PRODGRP /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				PROD /* LiveWallpaper.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		SRCGRP /* LiveWallpaper */ = {
+			isa = PBXGroup;
+			children = (
+				B001 /* LiveWallpaperApp.swift */,
+				B003 /* WallpaperWindow.swift */,
+				B004 /* WallpaperMode.swift */,
+				B009 /* Info.plist */,
+				B011 /* Assets.xcassets */,
+				MENUGRP /* MenuBar */,
+				BROWSERGRP /* Browser */,
+				SCANGRP /* Scanner */,
+				PAYGRP /* Paywall */,
+				WALLGRP /* Wallpapers */,
+			);
+			path = LiveWallpaper;
+			sourceTree = "<group>";
+		};
+		MENUGRP /* MenuBar */ = {
+			isa = PBXGroup;
+			children = (
+				B002 /* AppDelegate.swift */,
+			);
+			path = MenuBar;
+			sourceTree = "<group>";
+		};
+		BROWSERGRP /* Browser */ = {
+			isa = PBXGroup;
+			children = (
+				B009b /* BrowserWindow.swift */,
+				B010 /* BrowserHTML.swift */,
+			);
+			path = Browser;
+			sourceTree = "<group>";
+		};
+		WALLGRP /* Wallpapers */ = {
+			isa = PBXGroup;
+			children = (
+				B005 /* VideoWallpaperView.swift */,
+				B006 /* ShaderWallpaperView.swift */,
+				B007 /* HTMLWallpaperView.swift */,
+				B008 /* ParticleWallpaperView.swift */,
+			);
+			path = Wallpapers;
+			sourceTree = "<group>";
+		};
+		SCANGRP /* Scanner */ = {
+			isa = PBXGroup;
+			children = (
+				B012 /* VideoScanner.swift */,
+				B013 /* ScannerManager.swift */,
+				B015 /* UploadManager.swift */,
+			);
+			path = Scanner;
+			sourceTree = "<group>";
+		};
+		PAYGRP /* Paywall */ = {
+			isa = PBXGroup;
+			children = (
+				B014 /* SubscriptionManager.swift */,
+			);
+			path = Paywall;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		TARGET /* LiveWallpaper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFGLIST;
+			buildPhases = (
+				RESPHASE /* Resources */,
+				SRCPHASE /* Sources */,
+				FWKPHASE /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LiveWallpaper;
+			productName = LiveWallpaper;
+			productReference = PROD /* LiveWallpaper.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		PROJECT /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					TARGET = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = PROJCFGLIST;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = ROOT;
+			productRefGroup = PRODGRP /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				TARGET /* LiveWallpaper */,
+			);
+		};
+/* End PBXProject section */
+
+
+/* Begin PBXResourcesBuildPhase section */
+		RESPHASE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A011 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		SRCPHASE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A001 /* LiveWallpaperApp.swift in Sources */,
+				A002 /* AppDelegate.swift in Sources */,
+				A003 /* WallpaperWindow.swift in Sources */,
+				A004 /* WallpaperMode.swift in Sources */,
+				A005 /* VideoWallpaperView.swift in Sources */,
+				A006 /* ShaderWallpaperView.swift in Sources */,
+				A007 /* HTMLWallpaperView.swift in Sources */,
+				A008 /* ParticleWallpaperView.swift in Sources */,
+				A009 /* BrowserWindow.swift in Sources */,
+				A010 /* BrowserHTML.swift in Sources */,
+				A012 /* VideoScanner.swift in Sources */,
+				A013 /* ScannerManager.swift in Sources */,
+				A015 /* UploadManager.swift in Sources */,
+				A014 /* SubscriptionManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FWKPHASE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		PROJDBG /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				SWIFT_VERSION = 5.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+			};
+			name = Debug;
+		};
+		PROJREL /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				SWIFT_VERSION = 5.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+			};
+			name = Release;
+		};
+		TGTDBG /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = LiveWallpaper/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourname.livewallpaper";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				ENABLE_HARDENED_RUNTIME = YES;
+			};
+			name = Debug;
+		};
+		TGTREL /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = LiveWallpaper/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourname.livewallpaper";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				ENABLE_HARDENED_RUNTIME = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		PROJCFGLIST /* Build configuration list for PBXProject "LiveWallpaper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				PROJDBG /* Debug */,
+				PROJREL /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CFGLIST /* Build configuration list for PBXNativeTarget "LiveWallpaper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				TGTDBG /* Debug */,
+				TGTREL /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = PROJECT /* Project object */;
+}

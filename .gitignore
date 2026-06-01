@@ -1,0 +1,26 @@
+# OS X / macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Xcode Build and Cache Directories
+build/
+DerivedData/
+*.moved-aside
+
+# Xcode User Data (Crucial to ignore to prevent merge conflicts and state leaks)
+xcuserdata/
+*.xcuserstate
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# Swift Package Manager (optional but standard)
+.build/
+Packages/
+Package.pins
+Package.resolved
+
+# CocoaPods (optional but standard)
+Pods/

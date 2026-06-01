@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>LiveWallpaper</string>
+    <key>CFBundleDisplayName</key>
+    <string>Live Wallpaper</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.yourname.livewallpaper</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
+    <!-- Hide from Dock — menu bar agent only -->
+    <key>LSUIElement</key>
+    <true/>
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0</string>
+    <!-- URL scheme for Stripe Checkout redirect: backdrop://success?session_id=xxx -->
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.yourname.livewallpaper</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>backdrop</string>
+            </array>
+        </dict>
+    </array>
+    <!-- File access for user-picked videos and music -->
+    <key>NSDesktopFolderUsageDescription</key>
+    <string>Live Wallpaper needs access to play your video files as wallpapers.</string>
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>Live Wallpaper needs access to play your video files as wallpapers.</string>
+    <key>NSDownloadsFolderUsageDescription</key>
+    <string>Live Wallpaper needs access to play your video files as wallpapers.</string>
+    <key>NSMoviesUsageDescription</key>
+    <string>Live Wallpaper reads video files you select to display as wallpapers.</string>
+    <key>NSMusicUsageDescription</key>
+    <string>Live Wallpaper reads music files you select for the built-in player.</string>
+</dict>
+</plist>
