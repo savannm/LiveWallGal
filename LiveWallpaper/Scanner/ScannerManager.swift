@@ -99,6 +99,7 @@ final class ScannerManager: VideoScannerDelegate {
             "size":     v.formattedSize,
             "duration": v.formattedDuration,
             "res":      v.resolution,
+            "thumbnail": v.thumbnailBase64 ?? ""
         ]}
         guard let data = try? JSONSerialization.data(withJSONObject: arr),
               let str  = String(data: data, encoding: .utf8) else { return "[]" }

@@ -27,6 +27,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, BrowserWindowDelegate {
         setupMenuBar()
         createWallpaperWindows()
         SubscriptionManager.shared.refreshStatus()
+        
+        // Open the browser GUI automatically on launch/compile
+        openBrowser()
     }
 
     /// Restore last-used mode and video URL, defaulting to the first upload if available
@@ -89,13 +92,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, BrowserWindowDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let videoItem = NSMenuItem(title: "Load Video File…",
-                                   action: #selector(loadVideoFile), keyEquivalent: "o")
-        videoItem.target = self
-        menu.addItem(videoItem)
-
-        menu.addItem(NSMenuItem.separator())
-
         // Settings submenu
         let settingsMenu = NSMenu()
 
@@ -104,7 +100,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, BrowserWindowDelegate {
         cacheItem.target = self
         settingsMenu.addItem(cacheItem)
 
-        let clearUploadsItem = NSMenuItem(title: "Clear My Uploads Library",
+        let clearUploadsItem = NSMenuItem(title: "Clear Video Collection Library",
                                           action: #selector(clearUploadsLibrary), keyEquivalent: "")
         clearUploadsItem.target = self
         settingsMenu.addItem(clearUploadsItem)
@@ -166,8 +162,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, BrowserWindowDelegate {
 
     @objc func clearUploadsLibrary() {
         let alert = NSAlert()
-        alert.messageText = "Clear My Uploads?"
-        alert.informativeText = "Removes all videos from your uploads library. Original files on disk are NOT deleted."
+        alert.messageText = "Clear Video Collection?"
+        alert.informativeText = "Removes all videos from your video collection. Original files on disk are NOT deleted."
         alert.addButton(withTitle: "Clear Library")
         alert.addButton(withTitle: "Cancel")
         alert.alertStyle = .warning
@@ -178,7 +174,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, BrowserWindowDelegate {
             currentMode = .particles
             updateModeMenuChecks()
         }
-        showNotification(title: "Library Cleared", body: "My Uploads has been cleared.")
+        showNotification(title: "Library Cleared", body: "Your video collection has been cleared.")
     }
 
     @objc func clearScannedVideos() {

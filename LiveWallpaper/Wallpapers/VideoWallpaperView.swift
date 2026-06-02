@@ -95,7 +95,7 @@ class VideoWallpaperView: NSView {
     }
 
     private func addPlaceholderLabel() {
-        let tf = NSTextField(labelWithString: "No video selected.\nUse Browse → My Uploads to add a video.")
+        let tf = NSTextField(labelWithString: "No video selected.\nUse Library → Video Collection to add a video.")
         tf.alignment = .center
         tf.textColor = .lightGray
         tf.font = NSFont.systemFont(ofSize: 18, weight: .light)

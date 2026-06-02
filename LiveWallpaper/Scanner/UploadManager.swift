@@ -1,4 +1,6 @@
 import Foundation
+import AVFoundation
+import AppKit
 
 /// A video the user explicitly uploaded via the Upload button.
 struct UploadedVideo: Codable {
@@ -10,6 +12,8 @@ struct UploadedVideo: Codable {
     let resolution: String
     let tags: [String]
     let addedAt: Date
+    let thumbnailBase64: String?
+    let duration: String?
 
     var fileURL: URL? { URL(string: fileURLString) }
 }
@@ -39,42 +43,103 @@ final class UploadManager {
         guard fileURL.isFileURL else { return }
         // Deduplicate by file path
         if uploads.contains(where: { $0.fileURLString == fileURL.absoluteString }) { return }
+        
+        let entryId = UUID().uuidString
         let entry = UploadedVideo(
-            id: UUID().uuidString,
+            id: entryId,
             title: title.isEmpty ? fileURL.deletingPathExtension().lastPathComponent : title,
             fileName: fileURL.lastPathComponent,
             fileURLString: fileURL.absoluteString,
             category: category,
             resolution: resolution,
             tags: tags.isEmpty ? [category.lowercased()] : tags,
-            addedAt: Date()
+            addedAt: Date(),
+            thumbnailBase64: nil,
+            duration: "—"
         )
         uploads.insert(entry, at: 0)
         save()
         onChange?(uploads)
+        
+        // Asynchronously extract actual duration, resolution, and thumbnail frame
+        Task {
+            let asset = AVAsset(url: fileURL)
+            let thumb = await generateThumbnailBase64(asset: asset)
+            
+            var actualRes = resolution
+            var durationStr = "—"
+            
+            do {
+                let tracks = try await asset.loadTracks(withMediaType: .video)
+                if let track = tracks.first {
+                    let size = try await track.load(.naturalSize)
+                    let tf   = try await track.load(.preferredTransform)
+                    let transformed = size.applying(tf)
+                    let w = Int(abs(transformed.width))
+                    let h = Int(abs(transformed.height))
+                    if w > 0 && h > 0 { actualRes = "\(w)×\(h)" }
+                }
+                
+                let dur = try await asset.load(.duration)
+                let seconds = dur.seconds.isNaN ? 0 : dur.seconds
+                if seconds > 0 {
+                    let mins = Int(seconds) / 60
+                    let secs = Int(seconds) % 60
+                    durationStr = String(format: "%d:%02d", mins, secs)
+                }
+            } catch {}
+            
+            await MainActor.run {
+                if let idx = self.uploads.firstIndex(where: { $0.id == entryId }) {
+                    let old = self.uploads[idx]
+                    self.uploads[idx] = UploadedVideo(
+                        id: old.id,
+                        title: old.title,
+                        fileName: old.fileName,
+                        fileURLString: old.fileURLString,
+                        category: old.category,
+                        resolution: actualRes,
+                        tags: old.tags,
+                        addedAt: old.addedAt,
+                        thumbnailBase64: thumb,
+                        duration: durationStr
+                    )
+                    self.save()
+                    self.onChange?(self.uploads)
+                }
+            }
+        }
     }
 
     func addMultiple(fileURLs: [URL]) {
-        var added = 0
         for url in fileURLs {
             guard url.isFileURL,
                   FileManager.default.fileExists(atPath: url.path),
                   !uploads.contains(where: { $0.fileURLString == url.absoluteString })
             else { continue }
-            let entry = UploadedVideo(
-                id: UUID().uuidString,
-                title: url.deletingPathExtension().lastPathComponent,
-                fileName: url.lastPathComponent,
-                fileURLString: url.absoluteString,
-                category: "Other",
-                resolution: "Unknown",
-                tags: ["video"],
-                addedAt: Date()
-            )
-            uploads.insert(entry, at: 0)
-            added += 1
+            
+            self.add(fileURL: url, title: url.deletingPathExtension().lastPathComponent)
         }
-        if added > 0 { save(); onChange?(uploads) }
+    }
+
+    func update(id: String, title: String, category: String, resolution: String, tags: [String]) {
+        if let idx = uploads.firstIndex(where: { $0.id == id }) {
+            let old = uploads[idx]
+            uploads[idx] = UploadedVideo(
+                id: old.id,
+                title: title.isEmpty ? old.title : title,
+                fileName: old.fileName,
+                fileURLString: old.fileURLString,
+                category: category,
+                resolution: resolution,
+                tags: tags,
+                addedAt: old.addedAt,
+                thumbnailBase64: old.thumbnailBase64,
+                duration: old.duration
+            )
+            save()
+            onChange?(uploads)
+        }
     }
 
     func remove(id: String) {
@@ -102,14 +167,54 @@ final class UploadManager {
             "tags":     v.tags,
             "views":    "0",
             "likes":    "0",
-            "dur":      "—",
+            "dur":      v.duration ?? "—",
             "badge":    "mine",
             "wtype":    "video",
             "colors":   ["#0a0a0f", "#1a1a24", "#2a2a3a", "#7c5cfc"],
+            "thumbnail": v.thumbnailBase64 ?? ""
         ]}
         guard let data = try? JSONSerialization.data(withJSONObject: arr),
               let str  = String(data: data, encoding: .utf8) else { return "[]" }
         return str
+    }
+
+    private func generateThumbnailBase64(asset: AVAsset) async -> String? {
+        let generator = AVAssetImageGenerator(asset: asset)
+        generator.appliesPreferredTrackTransform = true
+        generator.maximumSize = CGSize(width: 320, height: 180)
+        
+        let time = CMTime(seconds: 1.0, preferredTimescale: 600)
+        
+        return await withCheckedContinuation { continuation in
+            generator.generateCGImagesAsynchronously(forTimes: [NSValue(time: time)]) { requestedTime, cgImage, actualTime, result, error in
+                if result == .succeeded, let cgImage = cgImage {
+                    let nsImage = NSImage(cgImage: cgImage, size: NSZeroSize)
+                    guard let tiffData = nsImage.tiffRepresentation,
+                          let bitmap = NSBitmapImageRep(data: tiffData),
+                          let jpegData = bitmap.representation(using: .jpeg, properties: [:]) else {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+                    continuation.resume(returning: jpegData.base64EncodedString())
+                } else {
+                    let timeZero = CMTime(seconds: 0.0, preferredTimescale: 600)
+                    generator.generateCGImagesAsynchronously(forTimes: [NSValue(time: timeZero)]) { _, cgImageZero, _, resultZero, _ in
+                        if resultZero == .succeeded, let cgImageZero = cgImageZero {
+                            let nsImage = NSImage(cgImage: cgImageZero, size: NSZeroSize)
+                            guard let tiffData = nsImage.tiffRepresentation,
+                                  let bitmap = NSBitmapImageRep(data: tiffData),
+                                  let jpegData = bitmap.representation(using: .jpeg, properties: [:]) else {
+                                continuation.resume(returning: nil)
+                                return
+                            }
+                            continuation.resume(returning: jpegData.base64EncodedString())
+                        } else {
+                            continuation.resume(returning: nil)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - All granted directories (for WKWebView file access)

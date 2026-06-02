@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 
 struct ScannedVideo: Codable {
     let id: String
@@ -9,6 +10,7 @@ struct ScannedVideo: Codable {
     let durationSeconds: Double
     let resolution: String     // e.g. "1920×1080"
     let addedAt: Date
+    let thumbnailBase64: String?
 
     var fileURLString: String { fileURL.absoluteString }
     var formattedDuration: String {
@@ -137,10 +139,10 @@ final class VideoScanner {
         var resolution = "Unknown"
 
         do {
-            let dur = try await asset.load(.duration)
-            duration = dur.seconds.isNaN ? 0 : dur.seconds
+            let tracks = try await asset.loadTracks(withMediaType: .video)
+            guard !tracks.isEmpty else { return nil } // Exclude if no video tracks
 
-            if let track = try await asset.loadTracks(withMediaType: .video).first {
+            if let track = tracks.first {
                 let size = try await track.load(.naturalSize)
                 let tf   = try await track.load(.preferredTransform)
                 let transformed = size.applying(tf)
@@ -148,9 +150,15 @@ final class VideoScanner {
                 let h = Int(abs(transformed.height))
                 if w > 0 && h > 0 { resolution = "\(w)×\(h)" }
             }
+
+            let dur = try await asset.load(.duration)
+            duration = dur.seconds.isNaN ? 0 : dur.seconds
+            guard duration > 0 else { return nil } // Exclude if invalid duration
         } catch {
-            // Non-critical — just leave defaults
+            return nil // Exclude if failed to load tracks or duration
         }
+
+        let thumbBase64 = await generateThumbnailBase64(asset: asset)
 
         return ScannedVideo(
             id: UUID().uuidString,
@@ -160,8 +168,48 @@ final class VideoScanner {
             fileSizeBytes: fileSize,
             durationSeconds: duration,
             resolution: resolution,
-            addedAt: Date()
+            addedAt: Date(),
+            thumbnailBase64: thumbBase64
         )
+    }
+
+    private func generateThumbnailBase64(asset: AVAsset) async -> String? {
+        let generator = AVAssetImageGenerator(asset: asset)
+        generator.appliesPreferredTrackTransform = true
+        generator.maximumSize = CGSize(width: 320, height: 180)
+        
+        let time = CMTime(seconds: 1.0, preferredTimescale: 600)
+        
+        return await withCheckedContinuation { continuation in
+            generator.generateCGImagesAsynchronously(forTimes: [NSValue(time: time)]) { requestedTime, cgImage, actualTime, result, error in
+                if result == .succeeded, let cgImage = cgImage {
+                    let nsImage = NSImage(cgImage: cgImage, size: NSZeroSize)
+                    guard let tiffData = nsImage.tiffRepresentation,
+                          let bitmap = NSBitmapImageRep(data: tiffData),
+                          let jpegData = bitmap.representation(using: .jpeg, properties: [:]) else {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+                    continuation.resume(returning: jpegData.base64EncodedString())
+                } else {
+                    let timeZero = CMTime(seconds: 0.0, preferredTimescale: 600)
+                    generator.generateCGImagesAsynchronously(forTimes: [NSValue(time: timeZero)]) { _, cgImageZero, _, resultZero, _ in
+                        if resultZero == .succeeded, let cgImageZero = cgImageZero {
+                            let nsImage = NSImage(cgImage: cgImageZero, size: NSZeroSize)
+                            guard let tiffData = nsImage.tiffRepresentation,
+                                  let bitmap = NSBitmapImageRep(data: tiffData),
+                                  let jpegData = bitmap.representation(using: .jpeg, properties: [:]) else {
+                                continuation.resume(returning: nil)
+                                return
+                            }
+                            continuation.resume(returning: jpegData.base64EncodedString())
+                        } else {
+                            continuation.resume(returning: nil)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

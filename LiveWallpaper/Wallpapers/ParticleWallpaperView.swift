@@ -50,6 +50,18 @@ class ParticleWallpaperView: SKView {
 
 class ParticleScene: SKScene {
 
+    private static let sharedTexture: SKTexture = {
+        let size = CGSize(width: 8, height: 8)
+        let img = NSImage(size: size)
+        img.lockFocus()
+        if let ctx = NSGraphicsContext.current?.cgContext {
+            ctx.setFillColor(NSColor.white.cgColor)
+            ctx.fillEllipse(in: CGRect(origin: .zero, size: size))
+        }
+        img.unlockFocus()
+        return SKTexture(image: img)
+    }()
+
     override func didMove(to view: SKView) {
         backgroundColor = NSColor.black
         addStarField()
@@ -64,6 +76,7 @@ class ParticleScene: SKScene {
 
     private func addStarField() {
         let e = SKEmitterNode()
+        e.particleTexture         = ParticleScene.sharedTexture
         // birthRate 2 means ~120 stars alive at a time (lifetime 60s) — cheap
         e.particleBirthRate       = 2
         e.particleLifetime        = 60
@@ -134,6 +147,7 @@ class ParticleScene: SKScene {
     private func emitter(birth: CGFloat, life: CGFloat, speed: CGFloat,
                          scale: CGFloat, color: NSColor, alpha: CGFloat) -> SKEmitterNode {
         let e = SKEmitterNode()
+        e.particleTexture          = ParticleScene.sharedTexture
         e.particleBirthRate        = birth
         e.particleLifetime         = life
         e.particleLifetimeRange    = life * 0.2

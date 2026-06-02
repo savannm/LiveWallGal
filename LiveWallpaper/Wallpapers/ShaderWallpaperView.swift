@@ -25,6 +25,11 @@ vertex VertexOut vertexShader(uint vid [[vertex_id]]) {
     return out;
 }
 
+// Pseudo-random hash function for star scattering
+float hash(float2 p) {
+    return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453123);
+}
+
 fragment float4 fragmentShader(VertexOut vin [[stage_in]],
                                 constant float &time [[buffer(0)]]) {
     float2 uv = vin.uv;
@@ -42,10 +47,19 @@ fragment float4 fragmentShader(VertexOut vin [[stage_in]],
     float blend = sin(t + uv.x * 2.0) * 0.5 + 0.5;
     float3 auroraColor = mix(mix(col1, col2, blend), col3, sin(t * 0.5) * 0.5 + 0.5);
 
-    float2 grid = fract(uv * 80.0);
-    float star = step(0.97, 1.0 - length(grid - 0.5));
-    float starBlink = sin(uv.x * 100.0 + uv.y * 73.0 + t * 3.0) * 0.5 + 0.5;
-    star *= starBlink;
+    // Scattered organic stars — smooth gaussian dot, no column-streak artefact
+    float2 gridId = floor(uv * 60.0);
+    float2 gridUv = fract(uv * 60.0);
+    // Place each star at a pseudo-random position inside its cell
+    float2 starPos = float2(hash(gridId + 0.1), hash(gridId + 7.3));
+    float dist = length(gridUv - starPos);
+    // Only ~4 % of cells contain a visible star
+    float starRand = hash(gridId + 45.2);
+    float visible = step(0.96, starRand);
+    // Smooth gaussian glow — never reaches cell boundary, so no vertical artefacts
+    float glow = exp(-dist * dist * 600.0);
+    float starBlink = sin(t * (1.2 + starRand * 2.5) + starRand * 6.28) * 0.45 + 0.55;
+    float star = visible * glow * starBlink * (0.4 + starRand * 0.6);
 
     float3 sky = float3(0.01, 0.02, 0.05) + float3(0.0, 0.03, 0.08) * (1.0 - uv.y);
     float3 finalColor = sky + auroraColor * band * 1.5 + float3(star * 0.9);
